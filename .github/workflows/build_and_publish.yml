@@ -59,8 +59,6 @@ jobs:
 
       - name: Create tag
         run: |
-          git config --global user.email "${{ github.event.pusher.email }}"
-          git config --global user.name "${{ github.event.pusher.name }}"
           git add .
           git commit -m 'release: ${{ steps.vars.outputs.next-version }}'
           git tag ${{ steps.vars.outputs.next-version }}
