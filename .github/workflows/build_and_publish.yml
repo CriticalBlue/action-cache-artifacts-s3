@@ -7,6 +7,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build_go_binary_and_release:
+    if: startsWith( ${{ github.ref_name }}, 'v')
     name: Build go binary and release
     runs-on: ubuntu-20.04
     steps:
@@ -31,7 +32,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if !startsWith( ${{ github.ref_name }}, "v") echo "Must be run from tagged branch like v2.0.1" && exit 1
           IS_PRE_RELEASE=false
 
           NEXT_VERSION="v${{ github.ref_name }}"
