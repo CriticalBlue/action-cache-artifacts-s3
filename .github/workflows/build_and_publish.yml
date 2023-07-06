@@ -34,7 +34,7 @@ jobs:
         run: |
           IS_PRE_RELEASE=false
 
-          NEXT_VERSION="v${{ github.ref_name }}"
+          NEXT_VERSION="${{ github.ref_name }}"
 
           echo "::set-output name=is-pre-release::$IS_PRE_RELEASE"
           echo "::set-output name=next-version::$NEXT_VERSION"
