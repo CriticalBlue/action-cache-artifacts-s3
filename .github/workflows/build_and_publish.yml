@@ -1,13 +1,24 @@
 name: Build and publish
 on:
   workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      release_version:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'Release version: i.e v2.0'
+        # Default value if no value is explicitly provided
+        default: ''
+        # Input has to be provided for the workflow to run
+        required: true
+        # The data type of the input
+        type: string
 # This allows a subsequently queued workflow run to interrupt previous runs
 concurrency:
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
   cancel-in-progress: true
 jobs:
   build_go_binary_and_release:
-    if: startsWith( ${{ github.ref_name }}, 'v')
+    if: startsWith( ${{ inputs.release_version }}, 'v')
     name: Build go binary and release
     runs-on: ubuntu-20.04
     steps:
@@ -34,7 +45,7 @@ jobs:
         run: |
           IS_PRE_RELEASE=false
 
-          NEXT_VERSION="${{ github.ref_name }}"
+          NEXT_VERSION="${{ inputs.release_version }}"
 
           echo "::set-output name=is-pre-release::$IS_PRE_RELEASE"
           echo "::set-output name=next-version::$NEXT_VERSION"
