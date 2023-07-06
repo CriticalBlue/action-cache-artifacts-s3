@@ -1,9 +1,11 @@
 name: Build and publish
 on:
-  workflow_dispatch:
-concurrency:
-  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
-  cancel-in-progress: true
+  push:
+    tags-ignore:
+      - "*.*"
+    branches:
+      - main
+      - develop
 
 jobs:
   build_go_binary_and_release:
@@ -52,13 +54,15 @@ jobs:
               BUMP_TYPE=patch
           fi
 
-          NEXT_VERSION="${{ github.ref_name }}"
+          NEXT_VERSION="v$(npx semver "$LAST_TAG" -i $BUMP_TYPE --preid rc)"
 
           echo "::set-output name=is-pre-release::$IS_PRE_RELEASE"
           echo "::set-output name=next-version::$NEXT_VERSION"
 
       - name: Create tag
         run: |
+          git config --global user.email "${{ github.event.pusher.email }}"
+          git config --global user.name "${{ github.event.pusher.name }}"
           git add .
           git commit -m 'release: ${{ steps.vars.outputs.next-version }}'
           git tag ${{ steps.vars.outputs.next-version }}
