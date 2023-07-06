@@ -31,8 +31,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          CURRENT_TAG=${{ github.ref_name }}
-          if !startsWith( $CURRENT_TAG, "v") echo "Must be run from tagged branch like v2.0.1" && exit 1
+          if !startsWith( ${{ github.ref_name }}, "v") echo "Must be run from tagged branch like v2.0.1" && exit 1
           IS_PRE_RELEASE=false
 
           NEXT_VERSION="v${{ github.ref_name }}"
